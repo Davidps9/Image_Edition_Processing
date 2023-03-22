@@ -19,11 +19,17 @@ void setup(){
 
 void draw(){
   image(img,0,0);
+  
+
     gui.pushFolder("Handmade_Photoshop");
+    
+    //Invert Image
     Inverted = gui.toggle("Invert Colors",false);
     if(Inverted != IsInverted){
       InvertImg();
     }
+    
+    
     x = gui.slider("x",0,-10,10);
     
     
