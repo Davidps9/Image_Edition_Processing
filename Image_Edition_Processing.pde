@@ -67,7 +67,7 @@ color invertColor(color c) {
 
 
 void ApplyMitjanaToImg() {
-int result;
+  int result;
 
   for (int x=0; x<3; x++) {
     for (int y=0; y<3; y++) {
@@ -80,20 +80,21 @@ int result;
   for (int x = 0; x<img.width; x++) {
     for (int y = 0; y<img.height; y++) {
       if ((x>0 && y>0)||(x<img.width && y<img.height) ) {
-       int [][] PixelMatrix = {
-       {img.get(x-1,y-1),img.get(x,y-1),img.get(x+1,y-1)},
-       {img.get(x-1,y),img.get(x,y),img.get(x+1,y)},
-       {img.get(x-1,y+1),img.get(x,y+1),img.get(x+1,y+1)}
-       };
-         for (int i=0; i<3; i++) {
+        int [][] PixelMatrix = {
+          {img.get(x-1, y-1), img.get(x, y-1), img.get(x+1, y-1)},
+          {img.get(x-1, y), img.get(x, y), img.get(x+1, y)},
+          {img.get(x-1, y+1), img.get(x, y+1), img.get(x+1, y+1)}
+        };
+        for (int i=0; i<3; i++) {
           for (int z=0; z<3; z++) {
-      
+
             Matrix[i][z] *= PixelMatrix[i][z];
-            
           }
         }
         result = (Matrix[0][0]) * ((Matrix[1][1] * Matrix[2][2])+(Matrix[2][1] * Matrix[1][2] )) + (-1*Matrix[1][0])*((Matrix[0][1] * Matrix[2][2])+(Matrix[0][2]* Matrix[2][1])) + (Matrix[2][0])*((Matrix[0][1] * Matrix[1][2])+(Matrix[0][2]*Matrix[1][1]));
-        img.set(x,y,result);
+        img.set(x, y, result);
+         println(result);
+
       }
     }
   }
