@@ -20,7 +20,8 @@ void setup() {
 void draw() {
   image(img, 0, 0);
 
-
+  gui.hide("options");
+   gui.hide("saves");
   gui.pushFolder("Handmade_Photoshop");
 
   //Invert Image
