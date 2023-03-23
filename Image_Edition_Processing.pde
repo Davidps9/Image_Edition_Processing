@@ -1,4 +1,5 @@
 LazyGui gui;
+String img_filename = "wp.png";
 PImage img;
 
 int MitArm;
@@ -9,7 +10,7 @@ int [][] MatrixG = new int [3][3];
 int [][] MatrixB = new int [3][3];
 
 void settings() {
-  img = loadImage("wp.png");
+  img = loadImage(img_filename);
   size(img.width, img.height, P2D);
 }
 void setup() {
@@ -21,7 +22,7 @@ void draw() {
   image(img, 0, 0);
 
   gui.hide("options");
-   gui.hide("saves");
+  //gui.hide("saves");
   gui.pushFolder("Handmade_Photoshop");
 
   //Invert Image
@@ -33,12 +34,19 @@ void draw() {
   //Denoise image
   MitArm = (int)gui.slider("Denoise Amount", 0, -10, 10);
   Mitjana = gui.toggle("Apply Denoise", false);
-  if (Mitjana && IsMitjanaApplied == false) {
-    ApplyMitjanaToImg();
-    
+  if (Mitjana) {
+    if(!IsMitjanaApplied){
+      ApplyMitjanaToImg();
+    } 
   } else {
-    // TODO: tornar la imatge al estat original
-  }
+    if(IsMitjanaApplied){
+      print("E");
+      img = loadImage(img_filename);
+      IsMitjanaApplied = false;
+    }
+   }
+   
+  
 
   gui.popFolder();
 
@@ -67,7 +75,7 @@ void invertImg() {
 color invertColor(color c) {
   float newc_red = map(red(c), 0, 255, 255, 0);
   float newc_green =  map(green(c), 0, 255, 255, 0);
-  float newc_blue =  map(blue(c), 0, 255, 255, 0);
+  float newc_blue =  map(blue(c), 0, 255, 255, 0); //<>//
   return color(newc_red, newc_green, newc_blue);
 }
 
@@ -75,7 +83,7 @@ void applyConvolution(PImage img, float[][] matrix){
   
   loadPixels();
   float newc_red, newc_green, newc_blue;
-   //<>//
+  
   for(int x = 0; x<img.width; x++){
     for(int y = 0; y<img.height; y++){
       newc_red = 0;
@@ -134,7 +142,7 @@ void ApplyMitjanaToImg() {
   applyConvolution(img,denoiseMatrix);
      
   //updatePixels();
-  IsMitjanaApplied = !IsMitjanaApplied;
+  IsMitjanaApplied = true;
 }
 
 void showPixelInfo(int x, int y) {
