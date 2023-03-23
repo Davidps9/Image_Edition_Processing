@@ -75,8 +75,8 @@ void applyConvolution(PImage img, float[][] matrix){
   
   loadPixels();
   float newc_red, newc_green, newc_blue;
-  
-  for(int x = 0; x<img.width; x++){ //<>//
+   //<>//
+  for(int x = 0; x<img.width; x++){
     for(int y = 0; y<img.height; y++){
       newc_red = 0;
       newc_green = 0;
@@ -85,9 +85,9 @@ void applyConvolution(PImage img, float[][] matrix){
       for(int m = 0; m<matrix.length; m++){
         for(int n = 0; n<matrix[0].length; n++){
           color c = img.get(x + (m-1), y + (n-1));
-          newc_red += red(c) * matrix[m][n] / 9;
-          newc_green += green(c) * matrix[m][n] / 9;
-          newc_blue += blue(c) * matrix[m][n] / 9;
+          newc_red += red(c) * matrix[m][n];
+          newc_green += green(c) * matrix[m][n];
+          newc_blue += blue(c) * matrix[m][n];
         }
       }
       img.set(x,y,color(newc_red, newc_green, newc_blue));
@@ -130,7 +130,7 @@ void ApplyMitjanaToImg() {
     }
   }*/
   
-  float[][] denoiseMatrix = { {1,1,1},{1,1,1},{1,1,1} };
+  float[][] denoiseMatrix = { {1/9,1/9,1/9},{1/9,1/9,1/9},{1/9,1/9,1/9} };
   applyConvolution(img,denoiseMatrix);
      
   //updatePixels();
