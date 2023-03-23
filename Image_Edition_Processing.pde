@@ -4,15 +4,9 @@ PImage img;
 
 boolean Inverted, IsInverted =false;
 boolean Mitjana, IsMitjanaApplied =false;
-int [][] MatrixR = new int [3][3];
-int [][] MatrixG = new int [3][3];
-int [][] MatrixB = new int [3][3];
 
-void settings() {
-  //img = loadImage(img_filename);
-  size(1280, 720, P2D);
-}
 void setup() {
+  size(1280, 720, P2D);
   surface.setTitle("Handmade Photoshop");
   surface.setResizable(true);
   gui = new LazyGui(this, new LazyGuiSettings()
@@ -176,3 +170,13 @@ void showPixelInfo(int raw_x, int raw_y) {
   fill(255);
   text(text, raw_x + xOffset, raw_y);
 }
+
+
+
+
+
+//(x,y,z) * (x,y,z) 
+//for(fuera){
+  //for(dentro)
+//Matriz[fuera][dentro] = array[fuera]*array[dentro] 
+//}
