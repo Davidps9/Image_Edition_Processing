@@ -29,17 +29,21 @@ void draw() {
     invertImg();
   }
 
-
-  MitArm = (int)gui.slider("Valor de la mitjana aritmetica", 0, -10, 10);
-  Mitjana = gui.toggle("Aplicar Mitjana", false);
-  if (Mitjana != IsMitjanaApplied) {
+  //Denoise image
+  MitArm = (int)gui.slider("Denoise Amount", 0, -10, 10);
+  Mitjana = gui.toggle("Apply Denoise", false);
+  if (Mitjana && IsMitjanaApplied == false) {
     ApplyMitjanaToImg();
+    
+  } else {
+    // TODO: tornar la imatge al estat original
   }
 
   gui.popFolder();
 
   showPixelInfo(mouseX, mouseY);
 }
+
 void invertImg() {
   color c;
   color newc;
@@ -66,15 +70,40 @@ color invertColor(color c) {
   return color(newc_red, newc_green, newc_blue);
 }
 
+void applyConvolution(PImage img, float[][] matrix){
+  
+  loadPixels();
+  float newc_red, newc_green, newc_blue;
+  
+  for(int x = 0; x<img.width; x++){ //<>//
+    for(int y = 0; y<img.height; y++){
+      newc_red = 0;
+      newc_green = 0;
+      newc_blue = 0;
+      
+      for(int m = 0; m<matrix.length; m++){
+        for(int n = 0; n<matrix[0].length; n++){
+          color c = img.get(x + (m-1), y + (n-1));
+          newc_red += red(c) * matrix[m][n] / 9;
+          newc_green += green(c) * matrix[m][n] / 9;
+          newc_blue += blue(c) * matrix[m][n] / 9;
+        }
+      }
+      img.set(x,y,color(newc_red, newc_green, newc_blue));
+    }
+  }
+  
+  updatePixels();
+}
 
 void ApplyMitjanaToImg() {
-  int resultR,resultG,resultB;
-  color newc;
-  loadPixels();
+  //int resultR,resultG,resultB;
+  //color newc;
+  //loadPixels();
 
 
 
-  for (int x = 0; x<img.width; x++) {
+  /*for (int x = 0; x<img.width; x++) {
     for (int y = 0; y<img.height; y++) {
       if ((x>0 && y>0)||(x<img.width && y<img.height) ) {
         color [][] PixelMatrix = {
@@ -98,9 +127,12 @@ void ApplyMitjanaToImg() {
         
       }
     }
-  }
+  }*/
+  
+  float[][] denoiseMatrix = { {1,1,1},{1,1,1},{1,1,1} };
+  applyConvolution(img,denoiseMatrix);
      
-  updatePixels();
+  //updatePixels();
   IsMitjanaApplied = !IsMitjanaApplied;
 }
 
