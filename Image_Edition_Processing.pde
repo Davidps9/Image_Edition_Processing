@@ -4,8 +4,9 @@ PImage img;
 int MitArm;
 boolean Inverted, IsInverted =false;
 boolean Mitjana, IsMitjanaApplied =false;
-int [][] Matrix = new int [3][3];
-
+int [][] MatrixR = new int [3][3];
+int [][] MatrixG = new int [3][3];
+int [][] MatrixB = new int [3][3];
 
 void settings() {
   img = loadImage("wp.png");
@@ -67,37 +68,38 @@ color invertColor(color c) {
 
 
 void ApplyMitjanaToImg() {
-  int result;
-
-  for (int x=0; x<3; x++) {
-    for (int y=0; y<3; y++) {
-
-      Matrix[x][y]=MitArm;
-    }
-  }
+  int resultR,resultG,resultB;
+  color newc;
   loadPixels();
+
+
 
   for (int x = 0; x<img.width; x++) {
     for (int y = 0; y<img.height; y++) {
       if ((x>0 && y>0)||(x<img.width && y<img.height) ) {
-        int [][] PixelMatrix = {
+        color [][] PixelMatrix = {
           {img.get(x-1, y-1), img.get(x, y-1), img.get(x+1, y-1)},
           {img.get(x-1, y), img.get(x, y), img.get(x+1, y)},
           {img.get(x-1, y+1), img.get(x, y+1), img.get(x+1, y+1)}
         };
         for (int i=0; i<3; i++) {
           for (int z=0; z<3; z++) {
-
-            Matrix[i][z] *= PixelMatrix[i][z];
+            
+            MatrixR[i][z] = (int)red(PixelMatrix[i][z]) /  2 ;
+            MatrixG[i][z] = (int)green(PixelMatrix[i][z]) /  2 ;    
+            MatrixB[i][z] = (int)blue(PixelMatrix[i][z]) /  2 ;
           }
         }
-        result = (Matrix[0][0]) * ((Matrix[1][1] * Matrix[2][2])+(Matrix[2][1] * Matrix[1][2] )) + (-1*Matrix[1][0])*((Matrix[0][1] * Matrix[2][2])+(Matrix[0][2]* Matrix[2][1])) + (Matrix[2][0])*((Matrix[0][1] * Matrix[1][2])+(Matrix[0][2]*Matrix[1][1]));
-        img.set(x, y, result);
-         println(result);
-
+        resultR = (MatrixR[0][0]) * ((MatrixR[1][1] * MatrixR[2][2])+(MatrixR[2][1] * MatrixR[1][2] )) + (-1*MatrixR[1][0])*((MatrixR[0][1] * MatrixR[2][2])+(MatrixR[0][2]* MatrixR[2][1])) + (MatrixR[2][0])*((MatrixR[0][1] * MatrixR[1][2])+(MatrixR[0][2]*MatrixR[1][1]));
+        resultG = (MatrixG[0][0]) * ((MatrixG[1][1] * MatrixG[2][2])+(MatrixG[2][1] * MatrixG[1][2] )) + (-1*MatrixG[1][0])*((MatrixG[0][1] * MatrixG[2][2])+(MatrixG[0][2]* MatrixG[2][1])) + (MatrixG[2][0])*((MatrixG[0][1] * MatrixG[1][2])+(MatrixG[0][2]*MatrixG[1][1]));
+        resultB = (MatrixB[0][0]) * ((MatrixB[1][1] * MatrixB[2][2])+(MatrixB[2][1] * MatrixB[1][2] )) + (-1*MatrixB[1][0])*((MatrixB[0][1] * MatrixB[2][2])+(MatrixB[0][2]* MatrixB[2][1])) + (MatrixB[2][0])*((MatrixB[0][1] * MatrixB[1][2])+(MatrixB[0][2]*MatrixB[1][1]));
+        newc = color(resultR,resultG,resultB);
+        img.set(x, y, newc);
+        
       }
     }
   }
+     
   updatePixels();
   IsMitjanaApplied = !IsMitjanaApplied;
 }
