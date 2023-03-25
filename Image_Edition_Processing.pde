@@ -27,7 +27,6 @@ void draw() {
     img_filename = load_filename;
     img = loadImage(img_filename);
     
-    print("yo");
     gui.show("Edit image");
     gui.show("Export image");
     gui.show("Close image");
