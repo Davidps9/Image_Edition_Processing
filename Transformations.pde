@@ -67,7 +67,6 @@ void generateMatrix(int matrixSize, String matrixType) {
         } else {
           denoiseMatrix[x][y] = -1;
         }
-        println(denoiseMatrix[x][y]);
       }
     }
     break;

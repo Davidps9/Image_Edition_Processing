@@ -1,4 +1,4 @@
-LazyGui gui; //<>// //<>//
+LazyGui gui; //<>//
 String img_filename;
 PImage img;
 
@@ -111,4 +111,5 @@ void draw() {
 
   image(img, width/2 - img.width/2, height/2 - img.height/2);
   showPixelInfo(mouseX, mouseY);
+  showHistogram();
 }

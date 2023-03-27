@@ -63,6 +63,30 @@ void showPixelInfo(int raw_x, int raw_y) {
   text(text, raw_x + xOffset, raw_y);
 }
 
+void showHistogram(){
+  stroke(255);
+  fill(0);
+  int[] histogramValues = new int[256];
+  color c;
+  int cAverage = 0;
+  
+  rect(width-256,height-100,256,100);
+  
+  for (int x = 0; x<img.width; x++) {
+    for (int y = 0; y<img.height; y++) {
+      c = img.get(x,y);
+      cAverage = round((red(c) + green(c) + blue(c)) / 3);
+      histogramValues[cAverage]++;
+    }
+  }
+  
+  int maxValue = max(histogramValues);
+  
+  for(int i = 0; i < histogramValues.length; i++){
+    line(width-256+i, height, width-256+i, height - map(histogramValues[i],0,maxValue,0,100));
+  }
+}
+
 int binomialCoeff(int n, int k)
 {
   int res = 1;
