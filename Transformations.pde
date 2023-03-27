@@ -31,6 +31,27 @@ void imgToGrayscale() {
   updatePixels();
 }
 
+void shiftHue(float shift){
+  color c,newc;
+  float newHue;
+  loadPixels();
+  colorMode(HSB);
+  
+  for (int x = 0; x<img.width; x++) {
+    for (int y = 0; y<img.height; y++) {
+
+      c = img.get(x, y);
+      newHue = hue(c) + shift;
+      newHue = newHue > 360 ? newHue-360 : newHue;
+      newc = color(newHue,saturation(c),brightness(c));
+      img.set(x, y, newc);
+    }
+  }
+
+  updatePixels();
+  colorMode(RGB);
+}
+
 void generateMatrix(int matrixSize, String matrixType) {
   matrixSize = matrixSize % 2 == 0 ? matrixSize + 1 : matrixSize;
   float[][] denoiseMatrix = new float[matrixSize][matrixSize];

@@ -29,6 +29,7 @@ void draw() {
     img = loadImage(img_filename);
 
     gui.show("Edit image");
+    gui.show("Analyze image");
     gui.show("Export image");
     gui.show("Close image");
   }
@@ -46,10 +47,12 @@ void draw() {
     invertImg();
   }
 
-  //Invert image
+  //Image to grayscale
   if (gui.button("Grayscale")) {
     imgToGrayscale();
   }
+  
+  //Binarize image
   gui.pushFolder("Binarize");
   int GrayValue = gui.sliderInt("Threshold", 0, 0, 255);
   if (gui.button("Binarize")) {
@@ -57,6 +60,15 @@ void draw() {
     binarizeImg(GrayValue);
   }
   gui.popFolder();
+  
+  //Hue shift
+  //gui.pushFolder("Hue Shift");
+  //float hueShiftValue = gui.slider("Shift amount",0,0,360);
+  //if(gui.button("Apply hue shift")){
+  //  shiftHue(hueShiftValue);
+  //}
+  //gui.popFolder();
+  
   gui.popFolder();
 
   //Denoise image
@@ -79,9 +91,9 @@ void draw() {
   gui.popFolder();
 
   // Border detection
-  gui.pushFolder("Border Detection");
+  gui.pushFolder("Border detection");
   String bdType = gui.radio("Detect", new String[]{"All", "Horizontal", "Vertical"});
-  if (gui.button("Detect Borders")) {
+  if (gui.button("Detect borders")) {
     generateMatrix(3, "Border" + bdType);
   }
   gui.popFolder();
@@ -109,6 +121,7 @@ void draw() {
     img_filename = null;
 
     gui.hide("Edit image");
+    gui.hide("Analyze image");
     gui.hide("Export image");
     gui.hide("Close image");
 
