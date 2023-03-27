@@ -72,8 +72,9 @@ void draw() {
   
   // Border detection
   gui.pushFolder("Border Detection");
-  if (gui.button("Border Detection")) {
-    generateMatrix(3, "Border Detection");
+  String bdType = gui.radio("Detect", new String[]{"All", "Horizontal", "Vertical"});
+  if (gui.button("Detect Borders")) {
+    generateMatrix(3, "Border" + bdType);
   }
   gui.popFolder();
 
@@ -169,7 +170,6 @@ void generateMatrix(int matrixSize, String matrixType) {
     break;
 
   case "Sharpen":
-
     for (int x = 0; x<matrixSize; x++) {
       for (int y = 0; y<matrixSize; y++) {
         if (x == floor(matrixSize/2) && y == floor(matrixSize/2)) {
@@ -181,12 +181,36 @@ void generateMatrix(int matrixSize, String matrixType) {
       }
     }
     break;
-  case "Border Detection":
-
+    
+  case "BorderAll":
     for (int x = 0; x<matrixSize; x++) {
       for (int y = 0; y<matrixSize; y++) {
         if (x == floor(matrixSize/2) && y == floor(matrixSize/2)) {
           denoiseMatrix[x][y] = pow(matrixSize, 2) - 1;
+        } else {
+          denoiseMatrix[x][y] = -1;
+        }
+      }
+    }
+    break;
+    
+  case "BorderHorizontal":
+    for (int x = 0; x<matrixSize; x++) {
+      for (int y = 0; y<matrixSize; y++) {
+        if(y == floor(matrixSize/2)){
+          denoiseMatrix[x][y] = matrixSize - 1;
+        } else {
+          denoiseMatrix[x][y] = -1;
+        }
+      }
+    }
+    break;
+    
+  case "BorderVertical":
+    for (int x = 0; x<matrixSize; x++) {
+      for (int y = 0; y<matrixSize; y++) {
+        if(x == floor(matrixSize/2)){
+          denoiseMatrix[x][y] = matrixSize - 1;
         } else {
           denoiseMatrix[x][y] = -1;
         }
