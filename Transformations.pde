@@ -52,6 +52,22 @@ void shiftHue(float shift){
   colorMode(RGB);
 }
 
+void tintImg(color tintColor){
+  color c,newc;
+  loadPixels();
+  
+  for (int x = 0; x<img.width; x++) {
+    for (int y = 0; y<img.height; y++) {
+
+      c = img.get(x, y);
+      newc = color(red(c)*map(red(tintColor),0,255,0,1),green(c)*map(green(tintColor),0,255,0,1),blue(c)*map(blue(tintColor),0,255,0,1));
+      img.set(x, y, newc);
+    }
+  }
+  
+  updatePixels();
+}
+
 void generateMatrix(int matrixSize, String matrixType) {
   matrixSize = matrixSize % 2 == 0 ? matrixSize + 1 : matrixSize;
   float[][] denoiseMatrix = new float[matrixSize][matrixSize];

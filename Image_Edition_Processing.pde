@@ -52,6 +52,14 @@ void draw() {
     imgToGrayscale();
   }
   
+  //Tint
+  gui.pushFolder("Tint");
+  PickerColor tintValue = gui.colorPicker("Color",color(255,0,0));
+  if(gui.button("Apply tint")){
+    tintImg(tintValue.hex);
+  }
+  gui.popFolder();
+  
   //Binarize image
   gui.pushFolder("Binarize");
   int GrayValue = gui.sliderInt("Threshold", 0, 0, 255);
