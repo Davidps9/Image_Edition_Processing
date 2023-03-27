@@ -63,28 +63,52 @@ void showPixelInfo(int raw_x, int raw_y) {
   text(text, raw_x + xOffset, raw_y);
 }
 
-void showHistogram(){
+void showHistogram() {
   stroke(255);
   fill(0);
-  int[] histogramValues = new int[256];
+  int[] histogramR = new int[256];
+  int[] histogramG = new int[256];
+  int[] histogramB = new int[256];
   color c;
-  int cAverage = 0;
-  
-  rect(width-256,height-100,256,100);
-  
+
+  rect(width-256, height-100, 256, 100);
+
   for (int x = 0; x<img.width; x++) {
     for (int y = 0; y<img.height; y++) {
-      c = img.get(x,y);
-      cAverage = round((red(c) + green(c) + blue(c)) / 3);
-      histogramValues[cAverage]++;
+      c = img.get(x, y);
+      histogramR[int(red(c))]++;
+      histogramG[int(green(c))]++;
+      histogramB[int(blue(c))]++;
     }
   }
-  
-  int maxValue = max(histogramValues);
-  
-  for(int i = 0; i < histogramValues.length; i++){
-    line(width-256+i, height, width-256+i, height - map(histogramValues[i],0,maxValue,0,100));
+  int maxValue = max(max(histogramR), max(histogramG), max(histogramB));
+
+  loadPixels();
+  for (int x = 0; x < 256; x++) {
+    int[] mappedValues = {
+      round(map(histogramR[x], 0, maxValue, 0, 100)),
+      round(map(histogramG[x], 0, maxValue, 0, 100)),
+      round(map(histogramB[x], 0, maxValue, 0, 100))
+    };
+    for (int ch = 0; ch < mappedValues.length; ch++) {
+      for (int y = 0; y < mappedValues[ch]; y++) {
+        color pixelColor = get(width-256+x, height-y);
+        switch(ch) {
+        case 0:
+          pixelColor = color(255, green(pixelColor), blue(pixelColor));
+          break;
+        case 1:
+          pixelColor = color(red(pixelColor), 255, blue(pixelColor));
+          break;
+        case 2:
+          pixelColor = color(red(pixelColor), green(pixelColor), 255);
+          break;
+        }
+        set(width-256+x, height-y, pixelColor);
+      }
+    }
   }
+  updatePixels();
 }
 
 int binomialCoeff(int n, int k)
