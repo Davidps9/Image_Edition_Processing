@@ -9,4 +9,5 @@ application.windows64
 application.macosx
 /data
 /exports
+/windows-amd64
 out
