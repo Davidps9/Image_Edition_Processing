@@ -117,14 +117,13 @@ void binarizeImg(int threshold) {
   loadPixels();
   for (int x = 0; x<img.width; x++) {
     for (int y = 0; y<img.height; y++) {
-      c = img.get(x,y);
-        if(red(c)< threshold){
-        newc = color(0,0,0);
-        }
-        else{
-        newc = color(255,255,255);
-        }
-        img.set(x,y,newc);
+      c = img.get(x, y);
+      if (red(c)< threshold) {
+        newc = color(0, 0, 0);
+      } else {
+        newc = color(255, 255, 255);
+      }
+      img.set(x, y, newc);
     }
   }
   updatePixels();

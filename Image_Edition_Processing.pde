@@ -1,6 +1,7 @@
 LazyGui gui; //<>//
 String img_filename;
 PImage img;
+boolean histogram = false, pixelInfo = false;
 
 void setup() {
   size(1280, 720, P2D);
@@ -91,6 +92,11 @@ void draw() {
 
   gui.popFolder();
 
+  gui.pushFolder("Analyze image");
+  histogram = gui.toggle("Histogram", false);
+  pixelInfo = gui.toggle("Cursor pixel info", false);
+  gui.popFolder();
+
   gui.pushFolder("Export image");
   String export_filename = gui.text("File name");
   if (gui.button("Export image")) {
@@ -110,6 +116,10 @@ void draw() {
   }
 
   image(img, width/2 - img.width/2, height/2 - img.height/2);
-  showPixelInfo(mouseX, mouseY);
-  showHistogram();
+  if (pixelInfo) {
+    showPixelInfo(mouseX, mouseY);
+  }
+  if (histogram) {
+    showHistogram();
+  }
 }
