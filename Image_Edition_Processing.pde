@@ -255,11 +255,3 @@ int binomialCoeff(int n, int k)
   }
   return res;
 }
-
-
-
-//(x,y,z) * (x,y,z)
-//for(fuera){
-//for(dentro)
-//Matriz[fuera][dentro] = array[fuera]*array[dentro]
-//}
