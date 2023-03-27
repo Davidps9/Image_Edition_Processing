@@ -39,16 +39,23 @@ void draw() {
   gui.pushFolder("Edit image");
 
   gui.pushFolder("Colorize");
-  
+
   //Invert image
   if (gui.button("Invert colors")) {
     invertImg();
   }
-  
+
   //Invert image
   if (gui.button("Grayscale")) {
     imgToGrayscale();
   }
+  gui.pushFolder("Binarize");
+  int GrayValue = gui.sliderInt("Threshold", 0, 0, 255);
+  if (gui.button("Binarize")) {
+    imgToGrayscale();
+    binarizeImg(GrayValue);
+  }
+  gui.popFolder();
   gui.popFolder();
 
   //Denoise image
@@ -69,7 +76,7 @@ void draw() {
     generateMatrix(mappedSharpenValue, "Sharpen");
   }
   gui.popFolder();
-  
+
   // Border detection
   gui.pushFolder("Border Detection");
   String bdType = gui.radio("Detect", new String[]{"All", "Horizontal", "Vertical"});
@@ -109,7 +116,7 @@ void draw() {
 /* EDITS */
 
 void invertImg() {
-  color c,newc;
+  color c, newc;
 
   loadPixels();
 
@@ -125,10 +132,10 @@ void invertImg() {
   updatePixels();
 }
 
-void imgToGrayscale(){
+void imgToGrayscale() {
   color c, newc;
   loadPixels();
-  
+
   for (int x = 0; x<img.width; x++) {
     for (int y = 0; y<img.height; y++) {
 
@@ -181,7 +188,7 @@ void generateMatrix(int matrixSize, String matrixType) {
       }
     }
     break;
-    
+
   case "BorderAll":
     for (int x = 0; x<matrixSize; x++) {
       for (int y = 0; y<matrixSize; y++) {
@@ -193,11 +200,11 @@ void generateMatrix(int matrixSize, String matrixType) {
       }
     }
     break;
-    
+
   case "BorderHorizontal":
     for (int x = 0; x<matrixSize; x++) {
       for (int y = 0; y<matrixSize; y++) {
-        if(y == floor(matrixSize/2)){
+        if (y == floor(matrixSize/2)) {
           denoiseMatrix[x][y] = matrixSize - 1;
         } else {
           denoiseMatrix[x][y] = -1;
@@ -205,11 +212,11 @@ void generateMatrix(int matrixSize, String matrixType) {
       }
     }
     break;
-    
+
   case "BorderVertical":
     for (int x = 0; x<matrixSize; x++) {
       for (int y = 0; y<matrixSize; y++) {
-        if(x == floor(matrixSize/2)){
+        if (x == floor(matrixSize/2)) {
           denoiseMatrix[x][y] = matrixSize - 1;
         } else {
           denoiseMatrix[x][y] = -1;
@@ -222,6 +229,24 @@ void generateMatrix(int matrixSize, String matrixType) {
   applyConvolution(img, denoiseMatrix);
 }
 
+void binarizeImg(int threshold) {
+  color c;
+  color newc;
+  loadPixels();
+  for (int x = 0; x<img.width; x++) {
+    for (int y = 0; y<img.height; y++) {
+      c = img.get(x,y);
+        if(red(c)< threshold){
+        newc = color(0,0,0);
+        }
+        else{
+        newc = color(255,255,255);
+        }
+        img.set(x,y,newc);
+    }
+  }
+  updatePixels();
+}
 /* GENERIC TRANSFORM FUNCTIONS */
 
 color invertColor(color c) {
@@ -231,9 +256,9 @@ color invertColor(color c) {
   return color(newc_red, newc_green, newc_blue);
 }
 
-color rgb2Gray(color c){
+color rgb2Gray(color c) {
   float newc = red(c) * 299/1000 + green(c) * 587/1000 + blue(c) * 114/1000;
-  return color(newc,newc,newc);
+  return color(newc, newc, newc);
 }
 
 void applyConvolution(PImage img, float[][] matrix) {
