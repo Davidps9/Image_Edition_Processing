@@ -1,4 +1,4 @@
-LazyGui gui; //<>//
+LazyGui gui; //<>// //<>//
 String img_filename;
 PImage img;
 
@@ -22,16 +22,16 @@ void draw() {
   String load_filename = gui.text("File name");
   boolean loadToggle = gui.button("Open image");
   gui.popFolder();
-  
+
   if (loadToggle && load_filename.length() > 0) {
     img_filename = load_filename;
     img = loadImage(img_filename);
-    
+
     gui.show("Edit image");
     gui.show("Export image");
     gui.show("Close image");
   }
-  
+
   if (img == null) {
     return;
   }
@@ -49,7 +49,23 @@ void draw() {
   String denoiseType = gui.radio("Denoise type", new String[]{"Average", "Gaussian"});
   if (gui.button("Apply denoise")) {
     int mappedDenoiseValue = round(map(denoiseValue, 1, 100, 3, 25));
-    denoiseImg(mappedDenoiseValue, denoiseType);
+    generateMatrix(mappedDenoiseValue, denoiseType);
+  }
+  gui.popFolder();
+
+  //Sharpen image
+  gui.pushFolder("Sharpen");
+  int sharpenValue = gui.sliderInt("Sharpen amount", 1, 1, 100);
+  if (gui.button("Apply sharpen")) {
+    int mappedSharpenValue = round(map(sharpenValue, 1, 100, 3, 25));
+    generateMatrix(mappedSharpenValue, "Sharpen");
+  }
+  gui.popFolder();
+  
+  // Border detection
+  gui.pushFolder("Border Detection");
+  if (gui.button("Border Detection")) {
+    generateMatrix(3, "Border Detection");
   }
   gui.popFolder();
 
@@ -69,11 +85,11 @@ void draw() {
   if (gui.button("Close image")) {
     img = null;
     img_filename = null;
-    
+
     gui.hide("Edit image");
     gui.hide("Export image");
     gui.hide("Close image");
-    
+
     return;
   }
 
@@ -101,21 +117,58 @@ void invertImg() {
   updatePixels();
 }
 
-void denoiseImg(int matrixSize, String denoiseType) {
-
+void generateMatrix(int matrixSize, String matrixType) {
+  matrixSize = matrixSize % 2 == 0 ? matrixSize + 1 : matrixSize;
   float[][] denoiseMatrix = new float[matrixSize][matrixSize];
 
-  switch(denoiseType) {
+  switch(matrixType) {
   case "Average":
     for (int x = 0; x<matrixSize; x++) {
       for (int y = 0; y<matrixSize; y++) {
-        denoiseMatrix[x][y] = 1;
+        denoiseMatrix[x][y] = 1 / pow(matrixSize, 2);
       }
     }
     break;
 
   case "Gaussian":
-    // TODO: Generate gaussian matrix
+    float[] Vector = new float [matrixSize];
+    float res = 0;
+    for (int i = 0; i < matrixSize; i++) {
+      Vector[i]= binomialCoeff(matrixSize-1, i);
+      res += Vector[i];
+    }
+    res *= res;
+    for (int x = 0; x<matrixSize; x++) {
+      for (int y = 0; y<matrixSize; y++) {
+        denoiseMatrix[x][y] = (Vector[x] * Vector[y])/ res;
+      }
+    }
+    break;
+
+  case "Sharpen":
+
+    for (int x = 0; x<matrixSize; x++) {
+      for (int y = 0; y<matrixSize; y++) {
+        if (x == floor(matrixSize/2) && y == floor(matrixSize/2)) {
+          denoiseMatrix[x][y] = pow(matrixSize, 2);
+        } else {
+          denoiseMatrix[x][y] = -1;
+        }
+        println(denoiseMatrix[x][y]);
+      }
+    }
+    break;
+  case "Border Detection":
+
+    for (int x = 0; x<matrixSize; x++) {
+      for (int y = 0; y<matrixSize; y++) {
+        if (x == floor(matrixSize/2) && y == floor(matrixSize/2)) {
+          denoiseMatrix[x][y] = pow(matrixSize, 2) - 1;
+        } else {
+          denoiseMatrix[x][y] = -1;
+        }
+      }
+    }
     break;
   }
 
@@ -132,10 +185,10 @@ color invertColor(color c) {
 }
 
 void applyConvolution(PImage img, float[][] matrix) {
-
+  PImage startingImg = img.get();
   int matrixCols = matrix.length;
   int matrixRows = matrix[0].length;
-  int matrixSize = matrixCols * matrixRows;
+  //int matrixSize = matrixCols * matrixRows;
 
   loadPixels();
   float newc_red, newc_green, newc_blue;
@@ -148,10 +201,10 @@ void applyConvolution(PImage img, float[][] matrix) {
 
       for (int m = 0; m<matrixCols; m++) {
         for (int n = 0; n<matrixRows; n++) {
-          color c = img.get(x + (m-floor(matrixCols/2)), y + (n-floor(matrixRows/2)));
-          newc_red += red(c) * matrix[m][n] / matrixSize;
-          newc_green += green(c) * matrix[m][n] / matrixSize;
-          newc_blue += blue(c) * matrix[m][n] / matrixSize;
+          color c = startingImg.get(x + (m-floor(matrixCols/2)), y + (n-floor(matrixRows/2)));
+          newc_red += red(c) * matrix[m][n];
+          newc_green += green(c) * matrix[m][n];
+          newc_blue += blue(c) * matrix[m][n];
         }
       }
       img.set(x, y, color(newc_red, newc_green, newc_blue));
@@ -187,6 +240,21 @@ void showPixelInfo(int raw_x, int raw_y) {
 }
 
 
+int binomialCoeff(int n, int k)
+{
+  int res = 1;
+
+  if (k > n - k) {
+    k = n - k;
+  }
+
+  for (int i = 0; i < k; ++i)
+  {
+    res *= (n - i);
+    res /= (i + 1);
+  }
+  return res;
+}
 
 
 
