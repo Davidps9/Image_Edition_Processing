@@ -38,10 +38,18 @@ void draw() {
 
   gui.pushFolder("Edit image");
 
+  gui.pushFolder("Colorize");
+  
   //Invert image
   if (gui.button("Invert colors")) {
     invertImg();
   }
+  
+  //Invert image
+  if (gui.button("Grayscale")) {
+    imgToGrayscale();
+  }
+  gui.popFolder();
 
   //Denoise image
   gui.pushFolder("Denoise");
@@ -100,8 +108,7 @@ void draw() {
 /* EDITS */
 
 void invertImg() {
-  color c;
-  color newc;
+  color c,newc;
 
   loadPixels();
 
@@ -110,6 +117,22 @@ void invertImg() {
 
       c = img.get(x, y);
       newc = invertColor(c);
+      img.set(x, y, newc);
+    }
+  }
+
+  updatePixels();
+}
+
+void imgToGrayscale(){
+  color c, newc;
+  loadPixels();
+  
+  for (int x = 0; x<img.width; x++) {
+    for (int y = 0; y<img.height; y++) {
+
+      c = img.get(x, y);
+      newc = rgb2Gray(c);
       img.set(x, y, newc);
     }
   }
@@ -182,6 +205,11 @@ color invertColor(color c) {
   float newc_green =  map(green(c), 0, 255, 255, 0);
   float newc_blue =  map(blue(c), 0, 255, 255, 0);
   return color(newc_red, newc_green, newc_blue);
+}
+
+color rgb2Gray(color c){
+  float newc = red(c) * 299/1000 + green(c) * 587/1000 + blue(c) * 114/1000;
+  return color(newc,newc,newc);
 }
 
 void applyConvolution(PImage img, float[][] matrix) {
