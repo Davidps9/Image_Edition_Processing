@@ -1,9 +1,13 @@
-LazyGui gui; //<>//
+import processing.video.*; //<>//
+LazyGui gui;
 String img_filename;
 PImage img;
 boolean histogram = false, pixelInfo = false;
+Capture video;
 
 void setup() {
+  video = new Capture(this,1280, 720);
+  video.start();
   size(1280, 720, P2D);
   surface.setTitle("Handmade Photoshop");
   surface.setResizable(true);
@@ -12,7 +16,10 @@ void setup() {
     .setAutosaveOnExit(false)
     );
 }
-
+void captureEvent(Capture video) {
+  // Step 4. Read the image from the camera.
+  video.read();
+}
 void draw() {
   background(0);
 
